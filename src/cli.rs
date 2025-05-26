@@ -29,6 +29,14 @@ pub struct Cli {
 }
 
 impl Cli {
+    pub fn get_inputs(&self) -> Vec<String> {
+        if self.inputs.is_empty() {
+            vec![".".to_string()]
+        } else {
+            self.inputs.clone()
+        }
+    }
+
     pub fn get_output_file(&self) -> Option<String> {
         let result = match &self.file {
             Some(filename) => Some(filename.clone()),

@@ -26,13 +26,13 @@ impl FileProcessor {
     }
 
     pub fn process(&self) -> anyhow::Result<()> {
-        if self.cli.inputs.is_empty() {
+        if self.cli.get_inputs().is_empty() {
             return Err(anyhow::anyhow!("No input files or directories specified"));
         }
 
         let mut all_files = Vec::new();
 
-        for input in &self.cli.inputs {
+        for input in &self.cli.get_inputs() {
             let path = PathBuf::from(input);
 
             if path.is_file() {
