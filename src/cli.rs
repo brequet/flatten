@@ -13,7 +13,7 @@ pub struct Cli {
 
     /// Save to file. If no filename provided, saves to flatten.md
     #[clap(short = 'f', long, value_name = "FILE")]
-    pub file: Option<Option<String>>,
+    pub file: Option<String>,
 
     /// Print output to stdout instead of copying to clipboard
     #[clap(short, long)]
@@ -30,11 +30,11 @@ pub struct Cli {
 
 impl Cli {
     pub fn get_output_file(&self) -> Option<String> {
-        match &self.file {
-            Some(Some(filename)) => Some(filename.clone()),
-            Some(None) => Some("flatten.md".to_string()),
-            None => None,
-        }
+        let result = match &self.file {
+            Some(filename) => Some(filename.clone()),
+            None => Some("flatten.md".to_string()),
+        };
+        result
     }
 
     pub fn get_include_patterns(&self) -> Vec<String> {
