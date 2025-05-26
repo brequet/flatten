@@ -1,28 +1,15 @@
-use std::fmt;
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum FlattenError {
-    Io(std::io::Error),
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),
+
+    #[error("Pattern error: {0}")]
     Pattern(String),
+
+    #[error("Processing error: {0}")]
     Processing(String),
-}
-
-impl fmt::Display for FlattenError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            FlattenError::Io(err) => write!(f, "IO error: {}", err),
-            FlattenError::Pattern(msg) => write!(f, "Pattern error: {}", msg),
-            FlattenError::Processing(msg) => write!(f, "Processing error: {}", msg),
-        }
-    }
-}
-
-impl std::error::Error for FlattenError {}
-
-impl From<std::io::Error> for FlattenError {
-    fn from(err: std::io::Error) -> Self {
-        FlattenError::Io(err)
-    }
 }
 
 impl From<glob::PatternError> for FlattenError {

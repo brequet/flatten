@@ -11,8 +11,8 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = "1.0.98"
-arboard = "3.5.0"
 clap = { version = "4.5.38", features = ["derive"] }
 glob = "0.3.2"
 ignore = "0.4.23"
+thiserror = "2.0.12"
 walkdir = "2.5.0"

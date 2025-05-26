@@ -7,6 +7,69 @@ pub struct IgnoreHandler {
 }
 
 impl IgnoreHandler {
+    const TEXT_EXTENSIONS: &'static [&'static str] = &[
+        "rs",
+        "go",
+        "js",
+        "ts",
+        "py",
+        "java",
+        "cpp",
+        "c",
+        "h",
+        "hpp",
+        "cs",
+        "php",
+        "rb",
+        "swift",
+        "kt",
+        "scala",
+        "clj",
+        "hs",
+        "ml",
+        "fs",
+        "dart",
+        "nim",
+        "zig",
+        "v",
+        "odin",
+        "txt",
+        "md",
+        "rst",
+        "toml",
+        "yaml",
+        "yml",
+        "json",
+        "xml",
+        "html",
+        "css",
+        "scss",
+        "sass",
+        "less",
+        "sql",
+        "sh",
+        "bash",
+        "zsh",
+        "fish",
+        "ps1",
+        "bat",
+        "cmd",
+        "dockerfile",
+        "gitignore",
+        "gitattributes",
+        "editorconfig",
+    ];
+
+    const TEXT_FILENAMES: &'static [&'static str] = &[
+        "dockerfile",
+        "makefile",
+        "rakefile",
+        "gemfile",
+        "procfile",
+        "justfile",
+        "taskfile",
+    ];
+
     pub fn new(include_patterns: Vec<String>, exclude_patterns: Vec<String>) -> Self {
         Self {
             include_patterns,
@@ -54,81 +117,29 @@ impl IgnoreHandler {
             }
         }
 
+        // Check if is a flatten.md file
+        if Self::is_flatten_md_file(path) {
+            return false;
+        }
+
         true
     }
 
     pub fn is_text_file(&self, path: &Path) -> bool {
         if let Some(extension) = path.extension() {
             let ext = extension.to_string_lossy().to_lowercase();
-            matches!(
-                ext.as_str(),
-                "rs" | "go"
-                    | "js"
-                    | "ts"
-                    | "py"
-                    | "java"
-                    | "cpp"
-                    | "c"
-                    | "h"
-                    | "hpp"
-                    | "cs"
-                    | "php"
-                    | "rb"
-                    | "swift"
-                    | "kt"
-                    | "scala"
-                    | "clj"
-                    | "hs"
-                    | "ml"
-                    | "fs"
-                    | "dart"
-                    | "nim"
-                    | "zig"
-                    | "v"
-                    | "odin"
-                    | "txt"
-                    | "md"
-                    | "rst"
-                    | "toml"
-                    | "yaml"
-                    | "yml"
-                    | "json"
-                    | "xml"
-                    | "html"
-                    | "css"
-                    | "scss"
-                    | "sass"
-                    | "less"
-                    | "sql"
-                    | "sh"
-                    | "bash"
-                    | "zsh"
-                    | "fish"
-                    | "ps1"
-                    | "bat"
-                    | "cmd"
-                    | "dockerfile"
-                    | "gitignore"
-                    | "gitattributes"
-                    | "editorconfig"
-            )
+            Self::TEXT_EXTENSIONS.contains(&ext.as_str())
+        } else if let Some(filename) = path.file_name() {
+            let name = filename.to_string_lossy().to_lowercase();
+            Self::TEXT_FILENAMES.contains(&name.as_str())
         } else {
-            // Check files without extensions (like Dockerfile, Makefile)
-            if let Some(filename) = path.file_name() {
-                let name = filename.to_string_lossy().to_lowercase();
-                matches!(
-                    name.as_str(),
-                    "dockerfile"
-                        | "makefile"
-                        | "rakefile"
-                        | "gemfile"
-                        | "procfile"
-                        | "justfile"
-                        | "taskfile"
-                )
-            } else {
-                false
-            }
+            false
         }
+    }
+
+    fn is_flatten_md_file(path: &Path) -> bool {
+        path.file_name()
+            .and_then(|name| name.to_str())
+            .map_or(false, |name| name == "flatten.md")
     }
 }

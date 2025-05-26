@@ -79,27 +79,14 @@ impl FileProcessor {
     }
 
     fn handle_output(&self, output: String) -> anyhow::Result<()> {
-        if let Some(output_file) = self.cli.get_output_file() {
-            fs::write(&output_file, output)?;
-            println!("Output written to: {}", output_file);
-        } else if self.cli.print {
+        if self.cli.print {
             print!("{}", output);
-        } else {
-            match arboard::Clipboard::new() {
-                Ok(mut clipboard) => {
-                    if let Err(e) = clipboard.set_text(output.clone()) {
-                        eprintln!("Failed to copy to clipboard: {}", e);
-                        print!("{}", output);
-                    } else {
-                        println!("Output copied to clipboard.");
-                    }
-                }
-                Err(e) => {
-                    eprintln!("Failed to access clipboard: {}", e);
-                    print!("{}", output);
-                }
-            }
+            return Ok(());
         }
+
+        let output_file = self.cli.get_output_file();
+        fs::write(&output_file, output)?;
+        println!("Output written to: {}", output_file);
 
         Ok(())
     }

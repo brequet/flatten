@@ -15,7 +15,7 @@ pub struct Cli {
     #[clap(short = 'f', long, value_name = "FILE")]
     pub file: Option<String>,
 
-    /// Print output to stdout instead of copying to clipboard
+    /// Print output to stdout
     #[clap(short, long)]
     pub print: bool,
 
@@ -37,12 +37,8 @@ impl Cli {
         }
     }
 
-    pub fn get_output_file(&self) -> Option<String> {
-        let result = match &self.file {
-            Some(filename) => Some(filename.clone()),
-            None => Some("flatten.md".to_string()),
-        };
-        result
+    pub fn get_output_file(&self) -> String {
+        self.file.as_deref().unwrap_or("flatten.md").to_string()
     }
 
     pub fn get_include_patterns(&self) -> Vec<String> {
