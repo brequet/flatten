@@ -1,16 +1,17 @@
 # Flattened Codebase
 
-Total files: 7
+Total files: 8
 
 ## Table of Contents
 
 1. [.\Cargo.toml](#file-1)
-2. [.\src\cli.rs](#file-2)
-3. [.\src\error.rs](#file-3)
-4. [.\src\ignore_handler.rs](#file-4)
-5. [.\src\main.rs](#file-5)
-6. [.\src\output.rs](#file-6)
-7. [.\src\processor.rs](#file-7)
+2. [.\readme.md](#file-2)
+3. [.\src\cli.rs](#file-3)
+4. [.\src\error.rs](#file-4)
+5. [.\src\ignore_handler.rs](#file-5)
+6. [.\src\main.rs](#file-6)
+7. [.\src\output.rs](#file-7)
+8. [.\src\processor.rs](#file-8)
 
 ## File 1: .\Cargo.toml
 
@@ -31,10 +32,17 @@ anyhow = "1.0.98"
 clap = { version = "4.5.38", features = ["derive"] }
 glob = "0.3.2"
 ignore = "0.4.23"
+thiserror = "2.0.12"
 walkdir = "2.5.0"
 ```
 
-## File 2: .\src\cli.rs
+## File 2: .\readme.md
+
+```md
+
+```
+
+## File 3: .\src\cli.rs
 
 ```rs
 use clap::Parser;
@@ -96,34 +104,21 @@ impl Cli {
 }
 ```
 
-## File 3: .\src\error.rs
+## File 4: .\src\error.rs
 
 ```rs
-use std::fmt;
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum FlattenError {
-    Io(std::io::Error),
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),
+
+    #[error("Pattern error: {0}")]
     Pattern(String),
+
+    #[error("Processing error: {0}")]
     Processing(String),
-}
-
-impl fmt::Display for FlattenError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            FlattenError::Io(err) => write!(f, "IO error: {}", err),
-            FlattenError::Pattern(msg) => write!(f, "Pattern error: {}", msg),
-            FlattenError::Processing(msg) => write!(f, "Processing error: {}", msg),
-        }
-    }
-}
-
-impl std::error::Error for FlattenError {}
-
-impl From<std::io::Error> for FlattenError {
-    fn from(err: std::io::Error) -> Self {
-        FlattenError::Io(err)
-    }
 }
 
 impl From<glob::PatternError> for FlattenError {
@@ -133,7 +128,7 @@ impl From<glob::PatternError> for FlattenError {
 }
 ```
 
-## File 4: .\src\ignore_handler.rs
+## File 5: .\src\ignore_handler.rs
 
 ```rs
 use ignore::{DirEntry, WalkBuilder};
@@ -283,7 +278,7 @@ impl IgnoreHandler {
 }
 ```
 
-## File 5: .\src\main.rs
+## File 6: .\src\main.rs
 
 ```rs
 use clap::Parser;
@@ -305,7 +300,7 @@ fn main() -> anyhow::Result<()> {
 }
 ```
 
-## File 6: .\src\output.rs
+## File 7: .\src\output.rs
 
 ```rs
 use crate::error::FlattenError;
@@ -417,7 +412,7 @@ impl OutputFormatter {
 }
 ```
 
-## File 7: .\src\processor.rs
+## File 8: .\src\processor.rs
 
 ```rs
 use crate::cli::Cli;
