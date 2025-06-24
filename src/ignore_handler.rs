@@ -52,6 +52,7 @@ impl IgnoreHandler {
         "zsh",
         "fish",
         "ps1",
+        "psm1",
         "bat",
         "cmd",
         "dockerfile",
