@@ -86,6 +86,8 @@ jobs:
     needs: [test, build]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -117,7 +119,7 @@ jobs:
 
             ## Downloads
             - **Linux x86_64**: `flatten-linux-x86_64`
-            - **Linux ARM64**: `flatten-linux-aarch64`  
+            - **Linux ARM64**: `flatten-linux-aarch64`
             - **Windows x86_64**: `flatten-windows-x86_64.exe`
           files: |
             artifacts/*/flatten-*
