@@ -19,8 +19,7 @@ impl OutputFormatter {
             "tree" => FormatType::Tree,
             _ => {
                 return Err(FlattenError::Processing(format!(
-                    "Unknown format: {}. Use 'full' or 'tree'",
-                    format
+                    "Unknown format: {format}. Use 'full' or 'tree'"
                 )));
             }
         };
@@ -54,7 +53,7 @@ impl OutputFormatter {
             files_in_dir.sort();
             output.push_str(&format!("{}:\n", dir.display()));
             for file in files_in_dir {
-                output.push_str(&format!("  {}\n", file));
+                output.push_str(&format!("  {file}\n"));
             }
             output.push('\n');
         }
@@ -89,7 +88,7 @@ impl OutputFormatter {
                 Ok(content) => {
                     let extension = file.extension().and_then(|ext| ext.to_str()).unwrap_or("");
 
-                    output.push_str(&format!("```{}\n", extension));
+                    output.push_str(&format!("```{extension}\n"));
                     output.push_str(&content);
                     if !content.ends_with('\n') {
                         output.push('\n');
@@ -97,7 +96,7 @@ impl OutputFormatter {
                     output.push_str("```\n\n");
                 }
                 Err(e) => {
-                    output.push_str(&format!("Error reading file: {}\n\n", e));
+                    output.push_str(&format!("Error reading file: {e}\n\n"));
                 }
             }
         }
