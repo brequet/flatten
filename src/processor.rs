@@ -45,7 +45,7 @@ impl FileProcessor {
                 let files = self.collect_files_from_directory(&path)?;
                 all_files.extend(files);
             } else {
-                eprintln!("Warning: '{}' is not a valid file or directory", input);
+                eprintln!("Warning: '{input}' is not a valid file or directory");
             }
         }
 
@@ -80,13 +80,13 @@ impl FileProcessor {
 
     fn handle_output(&self, output: String) -> anyhow::Result<()> {
         if self.cli.print {
-            print!("{}", output);
+            print!("{output}");
             return Ok(());
         }
 
         let output_file = self.cli.get_output_file();
         fs::write(&output_file, output)?;
-        println!("Output written to: {}", output_file);
+        println!("Output written to: {output_file}");
 
         Ok(())
     }
