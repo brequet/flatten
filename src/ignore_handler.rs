@@ -74,6 +74,24 @@ impl IgnoreHandler {
         "taskfile",
     ];
 
+    const IGNORED_FILENAMES: &'static [&'static str] = &[
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml",
+        "bun.lockb",
+        "npm-shrinkwrap.json",
+        "cargo.lock",
+        "pipfile.lock",
+        "poetry.lock",
+        "pdm.lock",
+        "composer.lock",
+        "gemfile.lock",
+        "go.sum",
+        "packages.lock.json",
+        "gradle.lockfile",
+        "flatten.md",
+    ];
+
     pub fn new(include_patterns: Vec<String>, exclude_patterns: Vec<String>) -> Self {
         Self {
             include_patterns,
@@ -100,6 +118,10 @@ impl IgnoreHandler {
     pub fn should_include_file(&self, path: &Path) -> bool {
         let path_str = path.to_string_lossy();
 
+        if self.is_ignored_filename(path) {
+            return false;
+        }
+
         // If include patterns are specified, file must match at least one
         if !self.include_patterns.is_empty() {
             let matches_include = self.include_patterns.iter().any(|pattern| {
@@ -121,11 +143,6 @@ impl IgnoreHandler {
             }
         }
 
-        // Check if is a flatten.md file
-        if Self::is_flatten_md_file(path) {
-            return false;
-        }
-
         true
     }
 
@@ -141,9 +158,12 @@ impl IgnoreHandler {
         }
     }
 
-    fn is_flatten_md_file(path: &Path) -> bool {
-        path.file_name()
-            .and_then(|name| name.to_str())
-            .map_or(false, |name| name == "flatten.md")
+    fn is_ignored_filename(&self, path: &Path) -> bool {
+        if let Some(filename) = path.file_name() {
+            let name = filename.to_string_lossy();
+            Self::IGNORED_FILENAMES.contains(&name.as_ref())
+        } else {
+            false
+        }
     }
 }

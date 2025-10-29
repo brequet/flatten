@@ -19,6 +19,10 @@ pub struct Cli {
     #[clap(short, long)]
     pub print: bool,
 
+    /// Print only the tree
+    #[clap(short, long)]
+    pub tree: bool,
+
     /// Include file patterns (comma separated, e.g., "*.rs,*.go")
     #[clap(short, long)]
     pub include: Option<String>,
