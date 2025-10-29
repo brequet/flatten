@@ -12,6 +12,7 @@ impl IgnoreHandler {
         "go",
         "js",
         "ts",
+        "adoc",
         "svelte",
         "py",
         "java",
