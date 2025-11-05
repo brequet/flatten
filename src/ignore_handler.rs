@@ -137,10 +137,10 @@ impl IgnoreHandler {
 
         // Check if file matches any exclude pattern
         for pattern in &self.exclude_patterns {
-            if let Ok(glob_pattern) = glob::Patter
-            {
-            && glob_pattern.matches(&path_str) {
+            if let Ok(glob_pattern) = glob::Pattern::new(pattern) {
+                if glob_pattern.matches(&path_str) {
                     return false;
+                }
             }
         }
 
